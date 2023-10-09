@@ -14,7 +14,7 @@
     <button
       nz-button
       [nzSize]="'large'"
-      nzType="primary"
+      nzType="default"
       (click)="showModal('register')"
     >
       Register
@@ -31,13 +31,13 @@
     *ngIf="modalType === 'login'"
     [isVisible]="isVisible"
     (closeModal)="onCloseModal()"
-    (submitted)="onSubmit($event)"
+    (submitted)="onSubmitLogin($event)"
   ></app-login>
 
   <app-register
     *ngIf="modalType === 'register'"
     [isVisible]="isVisible"
     (closeModal)="onCloseModal()"
-    (submitted)="onSubmit($event)"
+    (submitted)="onSubmitRegister($event)"
   ></app-register>
 </ng-container>

@@ -41,7 +41,6 @@ export class LoginComponent {
 
   handleSubmit(): void {
     if (this.form.valid) this.submitted.emit(this.form.value);
-    this.closeModal.emit();
   }
 
   handleClose(): void {

@@ -6,7 +6,7 @@ import {
   HttpInterceptor,
   HttpErrorResponse,
 } from '@angular/common/http';
-import { Observable, throwError, catchError } from 'rxjs';
+import { Observable, throwError, catchError, tap } from 'rxjs';
 import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Injectable()
@@ -27,7 +27,14 @@ export class AuthInterceptor implements HttpInterceptor {
       });
     }
 
-    console.log(token);
+    const user = localStorage.getItem('currentUser');
+
+    if (user) {
+      this.authService.user$.next(
+        JSON.parse(localStorage.getItem('currentUser')!)
+      );
+      this.authService.isLoggedIn$.next(true);
+    }
 
     return next
       .handle(request)

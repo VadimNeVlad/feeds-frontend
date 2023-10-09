@@ -5,8 +5,12 @@ export interface LoginData {
   password: string;
 }
 
-export interface LoginResponse {
+export interface AuthResponse {
   user: User;
   accessToken: string;
   refreshToken: string;
+}
+
+export interface RegisterData extends LoginData {
+  name: string;
 }

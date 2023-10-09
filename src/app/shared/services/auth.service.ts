@@ -1,8 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { BehaviorSubject, Observable, catchError, map, throwError } from 'rxjs';
-import { LoginData, LoginResponse } from '../models/auth';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  map,
+  tap,
+  throwError,
+} from 'rxjs';
+import { LoginData, AuthResponse, RegisterData } from '../models/auth';
 import { environment } from 'src/environments/environment.development';
 import { User } from '../models/user';
 
@@ -12,6 +19,7 @@ import { User } from '../models/user';
 export class AuthService {
   private _baseUrl = environment.apiUrl;
 
+  user$ = new BehaviorSubject<User | null>(null);
   isLoggedIn$ = new BehaviorSubject(false);
 
   constructor(
@@ -19,13 +27,27 @@ export class AuthService {
     private notification: NzNotificationService
   ) {}
 
-  login(data: LoginData): Observable<LoginResponse> {
+  login(data: LoginData): Observable<AuthResponse> {
     return this.http
-      .post<LoginResponse>(`${this._baseUrl}/auth/login`, data)
+      .post<AuthResponse>(`${this._baseUrl}/auth/login`, data)
       .pipe(
-        map((data: LoginResponse) => {
-          localStorage.setItem('feedsToken', data.accessToken);
-          this.isLoggedIn$.next(true);
+        map((data: AuthResponse) => {
+          this.setUser(data);
+          return data;
+        }),
+        catchError((e: HttpErrorResponse) => {
+          this.notification.error('Error', e.error.message);
+          return throwError(() => e.error.message);
+        })
+      );
+  }
+
+  register(data: RegisterData): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${this._baseUrl}/auth/register`, data)
+      .pipe(
+        map((data: AuthResponse) => {
+          this.setUser(data);
           return data;
         }),
         catchError((e: HttpErrorResponse) => {
@@ -41,6 +63,15 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('feedsToken');
+    localStorage.removeItem('currentUser');
     this.isLoggedIn$.next(false);
+    this.user$.next(null);
+  }
+
+  private setUser(data: AuthResponse) {
+    localStorage.setItem('feedsToken', data.accessToken);
+    localStorage.setItem('currentUser', JSON.stringify(data.user));
+    this.isLoggedIn$.next(true);
+    this.user$.next(data.user);
   }
 }

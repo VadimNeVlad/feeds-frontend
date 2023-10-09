@@ -2,5 +2,113 @@
   [(nzVisible)]="isVisible"
   nzTitle="Register"
   (nzOnCancel)="handleClose()"
+  [nzOkLoading]="isPending"
 >
+  <form class="register" [formGroup]="form">
+    <ng-container *nzModalContent>
+      <nz-input-group
+        [nzPrefix]="prefixTemplateUser"
+        nzSize="large"
+        class="register__field"
+      >
+        <input
+          formControlName="email"
+          type="text"
+          nz-input
+          placeholder="Email"
+        />
+      </nz-input-group>
+      <ng-template #prefixTemplateUser>
+        <span nz-icon nzType="user" nzTheme="outline"></span>
+      </ng-template>
+
+      <nz-alert
+        *ngIf="
+          form.get('email')?.hasError('email') && form.get('email')?.touched
+        "
+        nzType="error"
+        nzMessage="Please enter a valid email address"
+      ></nz-alert>
+      <nz-alert
+        *ngIf="
+          form.get('email')?.hasError('required') && form.get('email')?.touched
+        "
+        nzType="error"
+        nzMessage="Email is required"
+      ></nz-alert>
+
+      <nz-input-group
+        [nzPrefix]="prefixTemplateName"
+        nzSize="large"
+        class="register__field"
+      >
+        <input formControlName="name" type="text" nz-input placeholder="Name" />
+      </nz-input-group>
+      <ng-template #prefixTemplateName>
+        <span nz-icon nzType="audit" nzTheme="outline"></span>
+      </ng-template>
+
+      <nz-alert
+        *ngIf="
+          form.get('name')?.hasError('required') && form.get('name')?.touched
+        "
+        nzType="error"
+        nzMessage="Name is required"
+      ></nz-alert>
+
+      <nz-input-group
+        [nzSuffix]="suffixTemplate"
+        [nzPrefix]="prefixTemplateKey"
+        nzSize="large"
+        class="register__field"
+      >
+        <input
+          [type]="passwordVisible ? 'text' : 'password'"
+          nz-input
+          formControlName="password"
+          placeholder="Password"
+        />
+      </nz-input-group>
+      <ng-template #prefixTemplateKey>
+        <span nz-icon nzType="key" nzTheme="outline"></span>
+      </ng-template>
+      <ng-template #suffixTemplate>
+        <span
+          nz-icon
+          [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"
+          (click)="passwordVisible = !passwordVisible"
+        ></span>
+      </ng-template>
+
+      <nz-alert
+        *ngIf="
+          form.get('password')?.hasError('required') &&
+          form.get('password')?.touched
+        "
+        nzType="error"
+        nzMessage="Password is required"
+      ></nz-alert>
+      <nz-alert
+        *ngIf="
+          form.get('password')?.hasError('minlength') &&
+          form.get('password')?.touched
+        "
+        nzType="error"
+        nzMessage="Password must be more than
+      6 characters"
+      ></nz-alert>
+    </ng-container>
+
+    <div *nzModalFooter>
+      <button nz-button nzType="default" (click)="handleClose()">Cancel</button>
+      <button
+        [disabled]="form.invalid || isPending"
+        nz-button
+        nzType="primary"
+        (click)="handleSubmit()"
+      >
+        Register
+      </button>
+    </div>
+  </form>
 </nz-modal>
