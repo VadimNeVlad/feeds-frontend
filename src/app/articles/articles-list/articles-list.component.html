@@ -1,0 +1,14 @@
+<div class="article-list">
+  <div class="container">
+    <nz-list
+      *ngIf="articles$ | async as articles"
+      nzItemLayout="vertical"
+      class="article-list__list"
+    >
+      <app-articles-item
+        *ngFor="let article of articles; trackBy: trackById"
+        [article]="article"
+      ></app-articles-item>
+    </nz-list>
+  </div>
+</div>

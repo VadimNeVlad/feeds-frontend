@@ -1,0 +1,43 @@
+<header class="header">
+  <div class="header__logo">
+    <a routerLink="/">FeeDs</a>
+  </div>
+  <div *ngIf="!(isLoggedIn$ | async); else user" class="header__auth">
+    <button
+      nz-button
+      [nzSize]="'large'"
+      nzType="primary"
+      (click)="showModal('login')"
+    >
+      Login
+    </button>
+    <button
+      nz-button
+      [nzSize]="'large'"
+      nzType="primary"
+      (click)="showModal('register')"
+    >
+      Register
+    </button>
+  </div>
+
+  <ng-template #user>
+    <nz-avatar nzSize="large" nzIcon="user"></nz-avatar>
+  </ng-template>
+</header>
+
+<ng-container *ngIf="!(isLoggedIn$ | async)">
+  <app-login
+    *ngIf="modalType === 'login'"
+    [isVisible]="isVisible"
+    (closeModal)="onCloseModal()"
+    (submitted)="onSubmit($event)"
+  ></app-login>
+
+  <app-register
+    *ngIf="modalType === 'register'"
+    [isVisible]="isVisible"
+    (closeModal)="onCloseModal()"
+    (submitted)="onSubmit($event)"
+  ></app-register>
+</ng-container>

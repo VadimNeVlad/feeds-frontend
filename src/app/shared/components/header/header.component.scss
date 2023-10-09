@@ -1,0 +1,13 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 30px;
+  box-shadow: 0 2px 8px #f0f1f2;
+
+  &__logo {
+    a {
+      font-size: 24px;
+    }
+  }
+}
